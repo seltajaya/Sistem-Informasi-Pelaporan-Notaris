@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('reports', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('region_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedTinyInteger('report_month');
+            $table->unsignedSmallInteger('report_year');
+            $table->unsignedInteger('jumlah_akta')->default(0);
+            $table->unsignedInteger('jumlah_disahkan')->default(0);
+            $table->unsignedInteger('jumlah_dibukukan')->default(0);
+            $table->unsignedInteger('jumlah_wasiat')->default(0);
+            $table->unsignedInteger('jumlah_protes')->default(0);
+            $table->string('file_path');
+            $table->timestamps();
+
+            $table->unique(['user_id', 'report_month', 'report_year']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('reports');
+    }
+};
