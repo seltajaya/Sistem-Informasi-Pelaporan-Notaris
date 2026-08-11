@@ -1,59 +1,159 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Pelaporan Notaris
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem berbasis web untuk penggantian pengumpulan laporan bulanan/tahunan notaris yang sebelumnya memakai Google Forms. Notaris dapat mengirim laporan terstruktur beserta file PDF, dan admin dapat memantau, merekapitulasi, serta melacak kepatuhan pelaporan per wilayah.
 
-## About Laravel
+Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum dan HAM Bengkulu**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Role Notaris
+- Registrasi akun dengan pilihan **wilayah penempatan** (MPD 1, MPD 2, Simakuteng)
+- Dashboard riwayat laporan yang pernah dikirim
+- Input laporan bulanan: bulan & tahun, jumlah akta, legalisasi (disahkan), waarmerking (dibukukan), wasiat, protes
+- Upload file laporan (PDF, maks. 10 MB) — **unik per bulan** (tidak bisa duplikat)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Role Admin
+- Dashboard statistik laporan masuk per wilayah (per bulan/tahun)
+- Manajemen laporan: pencarian notaris, filter wilayah/bulan/tahun, lihat detail, unduh PDF
+- Rekapitulasi tahunan → drill-down per bulan
+- Tracking kepatuhan: daftar notaris yang **belum** melapor pada bulan/tahun/wilayah tertentu
 
-## Learning Laravel
+## Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+| Lapisan | Teknologi |
+|---|---|
+| Backend | Laravel 12 (PHP 8.2) |
+| Database | MySQL / MariaDB |
+| Frontend | Blade + Tailwind CSS 3 + Alpine.js |
+| Auth | Laravel Breeze (blade) |
+| Web server | Nginx 1.28 + PHP-FPM (php-cgi) |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Struktur Utama
 
-## Laravel Sponsors
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Admin/          # Dashboard, Laporan, Rekapitulasi & Tracking (admin)
+│   │   ├── Auth/           # Auth Breeze
+│   │   ├── DashboardController.php
+│   │   └── ReportController.php  # CRUD laporan notaris
+│   └── Middleware/EnsureAdmin.php
+├── Models/                 # User, Region, Report
+database/
+├── migrations/             # regions, users, reports
+└── seeders/DatabaseSeeder.php
+resources/views/
+├── components/             # Button, input, auth-card, layouts/partials (logo, header, footer)
+├── layouts/                # app (autentikasi), guest (auth), navigation
+├── auth/                   # login, register, dll
+├── admin/                  # dashboard, laporan, rekapitulasi, tracking
+├── reports/                # form input laporan
+└── welcome.blade.php       # landing page institusional
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalasi Lokal
 
-### Premium Partners
+### 1. Prasyarat
+- PHP 8.2+ (dengan ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `zip`)
+- Composer 2.x
+- MySQL / MariaDB
+- Node.js + npm (untuk build aset)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Setup aplikasi
 
-## Contributing
+```bash
+composer install
+npm install
+npm run build
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Salin .env dan isi konfigurasi database
+copy .env.example .env        # Windows
+# atur DB_DATABASE=maganghub, DB_USERNAME, DB_PASSWORD
 
-## Code of Conduct
+php artisan key:generate
+php artisan migrate --seed     # buat tabel + akun awal + wilayah
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+`DATABASE_MAGANGHUB`: aplikasi memakai database bernama `maganghub` — buat dulu jika belum ada:
 
-## Security Vulnerabilities
+```sql
+CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Akun awal (seed)
 
-## License
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@example.com` | `admin123` |
+| Notaris (MPD 1) | `notaris1@example.com` | `notaris123` |
+| Notaris (MPD 2) | `notaris2@example.com` | `notaris123` |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> Ganti password segera setelah masuk ke lingkungan produksi.
+
+## Menjalankan
+
+### Opsi A — Server bawaan (development)
+
+```bash
+php artisan serve
+# buka http://127.0.0.1:8000
+```
+
+### Opsi B — Nginx + PHP-FPM (direkomendasikan)
+
+Instalasi nginx di `D:\App\nginx\nginx-1.28.1\` dengan konfigurasi:
+- Listen port **8080** (port 80 dipakai Apache XAMPP)
+- Root → `maganghub/public`
+- PHP-FPM via `php-cgi.exe` XAMPP pada `127.0.0.1:9000`
+- Blokir akses file tersembunyi (`.env`), `client_max_body_size 12m`, gzip + cache aset
+
+Start (jalankan sekali, atau setelah restart komputer):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\App\nginx\start-php-cgi.ps1
+powershell -ExecutionPolicy Bypass -File D:\App\nginx\start-nginx.ps1
+```
+
+Kemudian buka `http://127.0.0.1:8080`.
+
+### Akses dari perangkat lain (LAN)
+
+IP lokal komputer (mis. `192.168.1.10`) — nginx sudah bind `0.0.0.0:8080`, dan rule firewall sudah dibuka:
+
+```
+http://192.168.1.10:8080
+```
+
+Jika tidak bisa diakses: periksa **AP Isolation** di pengaturan WiFi router, atau cek IP dengan `ipconfig`.
+
+## Identitas / Logo
+
+Header menggunakan logo resmi Kemenkumham jika file tersedia di:
+
+```
+public/images/logo-kemenkumham.svg   (atau .png)
+```
+
+Tanpa file tersebut, aplikasi menampilkan *placeholder mark* (timbangan emas) + wordmark institusional. Taruh logo resmi pada path di atas untuk memakainya.
+
+## Testing
+
+```bash
+php artisan test
+```
+
+Suite mencakup: registrasi (pilih wilayah), submit laporan + admin melihatnya, penolakan laporan duplikat, tracking notaris belum lapor, dan RBAC (notaris tidak dapat akses halaman admin).
+
+## Deployment
+
+Sebelum deploy ke hosting/VPS:
+1. `APP_ENV=production` dan `APP_DEBUG=false`
+2. Jalankan `php artisan config:cache` dan `php artisan route:cache`
+3. Atur SMTP nyata pada `MAIL_*` (saat ini `MAIL_MAILER=log`)
+4. Migrasi + seed, lalu ubah password default
+5. Arahkan domain ke `public/` document root (jangan ke root project)
+
+## Lisensi
+
+Aplikasi dikembangkan untuk keperluan internal Kanwil Kemenkumham Bengkulu.
