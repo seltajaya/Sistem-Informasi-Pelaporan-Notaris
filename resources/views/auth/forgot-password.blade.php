@@ -1,25 +1,27 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+    <x-auth-card title="Lupa Password" subtitle="Masukkan email Anda untuk menerima tautan reset password.">
+        <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+        <form method="POST" action="{{ route('password.email') }}">
+            @csrf
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+            <div>
+                <x-input-label for="email" :value="__('Email')" />
+                <x-text-input id="email" class="mt-2 block w-full" type="email" name="email" :value="old('email')" required autofocus placeholder="nama@email.com" />
+                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+            <div class="mt-6">
+                <x-primary-button class="w-full">
+                    Kirim Tautan Reset
+                </x-primary-button>
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+            <div class="mt-4 text-center">
+                <a class="text-sm font-semibold text-kumham-700 hover:text-kumham-500" href="{{ route('login') }}">
+                    &larr; Kembali ke halaman masuk
+                </a>
+            </div>
+        </form>
+    </x-auth-card>
 </x-guest-layout>
