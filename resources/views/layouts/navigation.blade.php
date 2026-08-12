@@ -13,6 +13,14 @@
                         <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
                             Laporan
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.notaris.index')" :active="request()->routeIs('admin.notaris.*')">
+                            Notaris
+                        </x-nav-link>
+                        @if (Auth::user()->isSuperAdmin())
+                            <x-nav-link :href="route('admin.region-admins.index')" :active="request()->routeIs('admin.region-admins.*')">
+                                Admin Wilayah
+                            </x-nav-link>
+                        @endif
                         <x-nav-link :href="route('admin.recap.annual')" :active="request()->routeIs('admin.recap.annual', 'admin.recap.monthly')">
                             Rekapitulasi
                         </x-nav-link>
@@ -84,6 +92,10 @@
 
             @if (Auth::user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">Laporan</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.notaris.index')" :active="request()->routeIs('admin.notaris.*')">Notaris</x-responsive-nav-link>
+                @if (Auth::user()->isSuperAdmin())
+                    <x-responsive-nav-link :href="route('admin.region-admins.index')" :active="request()->routeIs('admin.region-admins.*')">Admin Wilayah</x-responsive-nav-link>
+                @endif
                 <x-responsive-nav-link :href="route('admin.recap.annual')" :active="request()->routeIs('admin.recap.*')">Rekapitulasi</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.recap.tracking')" :active="request()->routeIs('admin.recap.tracking')">Kepatuhan</x-responsive-nav-link>
             @else

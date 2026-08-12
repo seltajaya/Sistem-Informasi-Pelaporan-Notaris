@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\NotarisController;
 use App\Http\Controllers\Admin\RecapController;
+use App\Http\Controllers\Admin\RegionAdminController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
@@ -36,6 +38,13 @@ Route::prefix('admin')->middleware(['auth', 'verified', 'admin'])->name('admin.'
     Route::get('/rekapitulasi', [RecapController::class, 'annual'])->name('recap.annual');
     Route::get('/rekapitulasi/{year}', [RecapController::class, 'monthly'])->name('recap.monthly');
     Route::get('/kepatuhan', [RecapController::class, 'tracking'])->name('recap.tracking');
+
+    Route::get('/admin-wilayah', [RegionAdminController::class, 'index'])->middleware('superadmin')->name('region-admins.index');
+    Route::post('/admin-wilayah', [RegionAdminController::class, 'store'])->middleware('superadmin')->name('region-admins.store');
+    Route::delete('/admin-wilayah/{user}', [RegionAdminController::class, 'destroy'])->middleware('superadmin')->name('region-admins.destroy');
+
+    Route::get('/notaris', [NotarisController::class, 'index'])->name('notaris.index');
+    Route::post('/notaris', [NotarisController::class, 'store'])->name('notaris.store');
 });
 
 require __DIR__.'/auth.php';
