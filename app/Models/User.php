@@ -26,9 +26,24 @@ class User extends Authenticatable
         'region_id',
     ];
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
+    public function isAdminWilayah(): bool
+    {
+        return $this->role === 'admin_wilayah';
+    }
+
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->isSuperAdmin() || $this->isAdminWilayah();
+    }
+
+    public function isNotaris(): bool
+    {
+        return $this->role === 'notaris';
     }
 
     public function region()
