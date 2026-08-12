@@ -1,8 +1,15 @@
 <x-guest-layout>
-    <x-auth-card title="Masuk ke Akun" subtitle="Sistem Informasi Pelaporan Notaris — Kanwil Kemenkumham Bengkulu">
+    <x-auth-card :title="'Masuk ke Akun' . ($region ? ' — ' . $region->name : '')"
+        subtitle="Sistem Informasi Pelaporan Notaris — Kanwil Kemenkumham Bengkulu">
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}">
+        @if ($region ?? null)
+            <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-emas-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-kumham-800">
+                Wilayah: {{ $region->name }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login', ['slug' => $region?->slug]) }}">
             @csrf
 
             <div>

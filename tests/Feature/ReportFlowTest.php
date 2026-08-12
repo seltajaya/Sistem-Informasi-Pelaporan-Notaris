@@ -31,7 +31,7 @@ class ReportFlowTest extends TestCase
             'name' => 'Admin',
             'email' => 'admin@test.com',
             'password' => bcrypt('password'),
-            'role' => 'admin',
+            'role' => 'superadmin',
         ]);
 
         $response = $this->actingAs($notaris)->post('/laporan', [
@@ -100,7 +100,7 @@ class ReportFlowTest extends TestCase
             'name' => 'Admin',
             'email' => 'admin2@test.com',
             'password' => bcrypt('password'),
-            'role' => 'admin',
+            'role' => 'superadmin',
         ]);
 
         Report::create([

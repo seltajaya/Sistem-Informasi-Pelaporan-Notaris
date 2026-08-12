@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\RecapController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
@@ -38,3 +39,17 @@ Route::prefix('admin')->middleware(['auth', 'verified', 'admin'])->name('admin.'
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/login/{slug?}', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
+
+Route::post('/login/{slug?}', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
+
+Route::get('/admin/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('admin.login');
+
+Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');

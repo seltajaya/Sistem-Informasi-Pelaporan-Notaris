@@ -38,30 +38,25 @@
                         Sampaikan laporan bulanan dan tahunan secara digital kepada Majelis Pengawas Daerah
                         melalui portal resmi Kantor Wilayah Kementerian Hukum dan HAM Bengkulu.
                     </p>
-                    <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-                        @auth
-                            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}"
-                                class="inline-flex items-center gap-2 rounded-lg bg-emas-400 px-6 py-3 text-sm font-bold uppercase tracking-wider text-kumham-950 shadow-lg transition duration-200 hover:bg-emas-300 active:scale-[0.98]">
-                                Buka Dashboard
+                    <div class="mt-8 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+                        @foreach ([
+                            ['name' => 'SIMAKUTENG', 'slug' => 'simakuteng', 'desc' => 'Seluma, Bengkulu Selatan, Manna, Kaur'],
+                            ['name' => 'RELEPARMU', 'slug' => 'releparmu', 'desc' => 'Rejang Lebong, Lebong, Kepahiang'],
+                            ['name' => 'KOTA BENGKULU', 'slug' => 'kota-bengkulu', 'desc' => 'Kota Bengkulu & sekitarnya'],
+                        ] as $wilayah)
+                            <a href="{{ route('login', ['slug' => $wilayah['slug']]) }}"
+                                class="group rounded-xl border border-white/20 bg-white/10 p-5 text-left backdrop-blur-sm transition duration-200 hover:bg-white/20 active:scale-[0.98]">
+                                <p class="text-lg font-extrabold uppercase tracking-wide text-white">{{ $wilayah['name'] }}</p>
+                                <p class="mt-1 text-sm text-white/70">{{ $wilayah['desc'] }}</p>
+                                <p class="mt-3 text-sm font-bold text-emas-300 group-hover:text-emas-200">Masuk &rarr;</p>
                             </a>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="inline-flex items-center gap-2 rounded-lg bg-emas-400 px-6 py-3 text-sm font-bold uppercase tracking-wider text-kumham-950 shadow-lg transition duration-200 hover:bg-emas-300 active:scale-[0.98]">
-                                Masuk
-                            </a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="inline-flex items-center gap-2 rounded-lg border border-white/30 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition duration-200 hover:bg-white/10 active:scale-[0.98]">
-                                    Daftar Notaris
-                                </a>
-                            @endif
-                        @endauth
+                        @endforeach
                     </div>
 
                     <div class="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-3">
                         @foreach ([
                             ['value' => '3', 'label' => 'Wilayah Pengawasan'],
-                            ['value' => 'MPD 1 · MPD 2', 'label' => 'Simakuteng'],
+                            ['value' => 'SIMAKUTENG · RELEPARMU', 'label' => 'KOTA BENGKULU'],
                             ['value' => '100%', 'label' => 'Laporan Digital'],
                         ] as $stat)
                             <div class="bg-kumham-800/60 px-6 py-6">
@@ -110,9 +105,9 @@
 
                     <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                         @foreach ([
-                            ['name' => 'MPD Wilayah 1', 'desc' => 'Kota Bengkulu dan sekitarnya'],
-                            ['name' => 'MPD Wilayah 2', 'desc' => 'Kabupaten Bengkulu Tengah & Utara'],
-                            ['name' => 'Simakuteng', 'desc' => 'Seluma, Manna, Kaur, dan Bengkulu Selatan'],
+                            ['name' => 'SIMAKUTENG', 'desc' => 'Seluma, Bengkulu Selatan, Manna, dan Kaur'],
+                            ['name' => 'RELEPARMU', 'desc' => 'Rejang Lebong, Lebong, dan Kepahiang'],
+                            ['name' => 'KOTA BENGKULU', 'desc' => 'Kota Bengkulu dan sekitarnya'],
                         ] as $i => $wilayah)
                             <div class="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-6">
                                 <span class="absolute inset-y-0 left-0 w-1 bg-emas-500"></span>
@@ -135,7 +130,7 @@
 
                     <div class="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
                         @foreach ([
-                            ['step' => '01', 'title' => 'Daftar & Pilih Wilayah', 'desc' => 'Buat akun notaris dan pilih wilayah penempatan MPD Anda.'],
+                            ['step' => '01', 'title' => 'Didaftarkan Admin Wilayah', 'desc' => 'Akun notaris dibuat oleh admin wilayah sesuai tempat praktik Anda.'],
                             ['step' => '02', 'title' => 'Isi Laporan & Unggah PDF', 'desc' => 'Lengkapi jumlah akta dan dokumen, lalu lampirkan file laporan PDF.'],
                             ['step' => '03', 'title' => 'Terpantau oleh Pengawas', 'desc' => 'Laporan Anda langsung tercatat dan dapat diverifikasi oleh admin.'],
                         ] as $cara)
