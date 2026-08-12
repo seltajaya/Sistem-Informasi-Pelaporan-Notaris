@@ -1,6 +1,6 @@
 # Sistem Informasi Pelaporan Notaris
 
-Sistem berbasis web untuk penggantian pengumpulan laporan bulanan/tahunan notaris yang sebelumnya memakai Google Forms. Notaris dapat mengirim laporan terstruktur beserta file PDF, dan admin dapat memantau, merekapitulasi, serta melacak kepatuhan pelaporan per wilayah.
+Sistem berbasis web untuk penggantian pengumpulan laporan bulanan/tahunan notaris yang sebelumnya memakai Google Forms. Notaris mengirim laporan terstruktur beserta file PDF, sementara admin wilayah dan superadmin memantau, merekapitulasi, serta melacak kepatuhan pelaporan per wilayah.
 
 Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum dan HAM Bengkulu**.
 
@@ -37,22 +37,22 @@ Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Admin/          # Dashboard, Laporan, Rekapitulasi & Tracking (admin)
-│   │   ├── Auth/           # Auth Breeze
+│   │   ├── Admin/          # Dashboard, Laporan, Rekapitulasi, Tracking, Notaris, Admin Wilayah
+│   │   ├── Auth/           # Auth Breeze (login, reset password)
 │   │   ├── DashboardController.php
 │   │   └── ReportController.php  # CRUD laporan notaris
-│   └── Middleware/EnsureAdmin.php
+│   └── Middleware/         # EnsureAdmin, EnsureSuperAdmin
 ├── Models/                 # User, Region, Report
 database/
-├── migrations/             # regions, users, reports
+├── migrations/             # regions, users, reports, role/region expand
 └── seeders/DatabaseSeeder.php
 resources/views/
 ├── components/             # Button, input, auth-card, layouts/partials (logo, header, footer)
 ├── layouts/                # app (autentikasi), guest (auth), navigation
-├── auth/                   # login, register, dll
-├── admin/                  # dashboard, laporan, rekapitulasi, tracking
+├── auth/                   # login, forgot/reset password
+├── admin/                  # dashboard, laporan, rekapitulasi, tracking, region-admins, notaris
 ├── reports/                # form input laporan
-└── welcome.blade.php       # landing page institusional
+└── welcome.blade.php       # landing page institusional (3 tombol wilayah)
 ```
 
 ## Instalasi Lokal
@@ -78,7 +78,7 @@ php artisan key:generate
 php artisan migrate --seed     # buat tabel + akun awal + wilayah
 ```
 
-`DATABASE_MAGANGHUB`: aplikasi memakai database bernama `maganghub` — buat dulu jika belum ada:
+Database yang dipakai bernama `maganghub` — buat dulu jika belum ada:
 
 ```sql
 CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -131,13 +131,15 @@ Kemudian buka `http://127.0.0.1:8080`.
 
 ### Akses dari perangkat lain (LAN)
 
-IP lokal komputer (mis. `192.168.1.10`) — nginx sudah bind `0.0.0.0:8080`, dan rule firewall sudah dibuka:
+nginx sudah bind `0.0.0.0:8080` dan rule firewall TCP 8080 sudah dibuka untuk semua profil jaringan. Dari perangkat lain di jaringan yang sama, buka:
 
 ```
-http://192.168.1.10:8080
+http://<IP-laptop>:8080
 ```
 
-Jika tidak bisa diakses: periksa **AP Isolation** di pengaturan WiFi router, atau cek IP dengan `ipconfig`.
+Cek IP dengan `ipconfig`. Jika jaringan memblokir antar-perangkat (AP isolation di kantor), gunakan **hotspot HP** (laptop connect ke hotspot HP) atau **Mobile Hotspot Windows** — saat laptop jadi hotspot, IP host-nya `192.168.137.1`, akses via `http://192.168.137.1:8080`.
+
+Jika tetap gagal: periksa **AP Isolation** di pengaturan WiFi router, atau cek IP dengan `ipconfig`.
 
 ## Identitas / Logo
 
@@ -155,7 +157,7 @@ Tanpa file tersebut, aplikasi menampilkan *placeholder mark* (timbangan emas) + 
 php artisan test
 ```
 
-Suite mencakup: registrasi (pilih wilayah), submit laporan + admin melihatnya, penolakan laporan duplikat, tracking notaris belum lapor, dan RBAC (notaris tidak dapat akses halaman admin).
+Suite mencakup: migrasi role & region, login wilayah (penolakan lintas wilayah), submit laporan + admin melihatnya, penolakan laporan duplikat, tracking notaris belum lapor, RBAC (notaris tidak akses admin, admin wilayah tidak akses superadmin), pendaftaran notaris oleh admin wilayah, dan pendaftaran admin wilayah oleh superadmin.
 
 ## Deployment
 
