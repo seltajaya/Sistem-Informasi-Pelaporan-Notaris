@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\ScopesRegion;
 use App\Models\Region;
 use App\Models\Report;
 use App\Models\User;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class RecapController extends Controller
 {
+    use ScopesRegion;
+
     private const MONTHS = [
         1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
         5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
@@ -19,8 +22,10 @@ class RecapController extends Controller
 
     public function annual(Request $request): View
     {
+        $regionId = $this->regionScope($request);
+
         $years = Report::query()
-            ->when($request->filled('region_id'), fn ($q) => $q->where('region_id', $request->region_id))
+            ->when($regionId, fn ($q) => $q->where('region_id', $regionId))
             ->selectRaw('report_year, COUNT(*) as total_laporan, SUM(jumlah_akta) as total_akta,
                 SUM(jumlah_disahkan) as total_disahkan, SUM(jumlah_dibukukan) as total_dibukukan,
                 SUM(jumlah_wasiat) as total_wasiat, SUM(jumlah_protes) as total_protes')
@@ -31,14 +36,17 @@ class RecapController extends Controller
         return view('admin.recap-annual', [
             'years' => $years,
             'regions' => Region::orderBy('name')->get(),
+            'canSelectRegion' => $this->canSelectRegion($request),
         ]);
     }
 
     public function monthly(Request $request, int $year): View
     {
+        $regionId = $this->regionScope($request);
+
         $months = Report::query()
             ->where('report_year', $year)
-            ->when($request->filled('region_id'), fn ($q) => $q->where('region_id', $request->region_id))
+            ->when($regionId, fn ($q) => $q->where('region_id', $regionId))
             ->selectRaw('report_month, COUNT(*) as total_laporan, SUM(jumlah_akta) as total_akta,
                 SUM(jumlah_disahkan) as total_disahkan, SUM(jumlah_dibukukan) as total_dibukukan,
                 SUM(jumlah_wasiat) as total_wasiat, SUM(jumlah_protes) as total_protes')
@@ -51,12 +59,13 @@ class RecapController extends Controller
             'months' => $months,
             'monthsNames' => self::MONTHS,
             'regions' => Region::orderBy('name')->get(),
+            'canSelectRegion' => $this->canSelectRegion($request),
         ]);
     }
 
     public function tracking(Request $request): View
     {
-        $regionId = $request->input('region_id');
+        $regionId = $this->regionScope($request);
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
 
@@ -76,8 +85,10 @@ class RecapController extends Controller
 
         return view('admin.tracking', [
             'regions' => Region::orderBy('name')->get(),
+            'regionId' => $regionId,
             'missing' => $missing,
             'monthsNames' => self::MONTHS,
+            'canSelectRegion' => $this->canSelectRegion($request),
         ]);
     }
 }

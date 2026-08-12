@@ -14,6 +14,7 @@
                     <x-input-label for="q" :value="__('Cari Notaris')" />
                     <x-text-input id="q" class="mt-1" type="text" name="q" :value="request('q')" placeholder="Nama notaris..." />
                 </div>
+                @if ($canSelectRegion ?? true)
                 <div>
                     <x-input-label for="region_id" :value="__('Wilayah')" />
                     <select id="region_id" name="region_id" class="mt-1 rounded-lg border-gray-300 shadow-sm focus:border-kumham-500 focus:ring-kumham-500">
@@ -23,6 +24,7 @@
                         @endforeach
                     </select>
                 </div>
+                @endif
                 <div>
                     <x-input-label for="month" :value="__('Bulan')" />
                     <select id="month" name="month" class="mt-1 rounded-lg border-gray-300 shadow-sm focus:border-kumham-500 focus:ring-kumham-500">

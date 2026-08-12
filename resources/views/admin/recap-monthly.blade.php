@@ -11,6 +11,7 @@
     <div class="py-8">
         <div class="mx-auto max-w-container px-4 sm:px-6 lg:px-8">
             <form method="GET" class="card-panel mb-6 flex flex-wrap items-end gap-4 p-4">
+                @if ($canSelectRegion ?? true)
                 <div>
                     <x-input-label for="region_id" :value="__('Wilayah')" />
                     <select id="region_id" name="region_id" class="mt-1 rounded-lg border-gray-300 shadow-sm focus:border-kumham-500 focus:ring-kumham-500">
@@ -20,6 +21,7 @@
                         @endforeach
                     </select>
                 </div>
+                @endif
                 <x-primary-button>Filter</x-primary-button>
             </form>
 

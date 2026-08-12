@@ -10,6 +10,7 @@
     <div class="py-8">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form method="GET" class="card-panel mb-6 flex flex-wrap items-end gap-4 p-4">
+                @if ($canSelectRegion ?? true)
                 <div>
                     <x-input-label for="region_id" :value="__('Wilayah')" />
                     <select id="region_id" name="region_id" class="mt-1 rounded-lg border-gray-300 shadow-sm focus:border-kumham-500 focus:ring-kumham-500" required>
@@ -19,6 +20,7 @@
                         @endforeach
                     </select>
                 </div>
+                @endif
                 <div>
                     <x-input-label for="month" :value="__('Bulan')" />
                     <select id="month" name="month" class="mt-1 rounded-lg border-gray-300 shadow-sm focus:border-kumham-500 focus:ring-kumham-500">
@@ -36,14 +38,14 @@
                 <x-primary-button>Cek Kepatuhan</x-primary-button>
             </form>
 
-            @if (request('region_id'))
+            @if ($regionId)
                 <div class="card-panel overflow-hidden">
                     <div class="border-b border-gray-200 px-6 py-4 flex flex-wrap items-center justify-between gap-2">
                         <h3 class="font-bold text-kumham-900">
                             Belum Lapor — {{ $monthsNames[(int) request('month', now()->month)] }} {{ request('year', now()->year) }}
                         </h3>
                         <span class="inline-flex rounded-full bg-kumham-50 px-3 py-1 text-xs font-bold text-kumham-700">
-                            {{ $regions->firstWhere('id', (int) request('region_id'))?->name }}
+                            {{ $regions->firstWhere('id', $regionId)?->name }}
                         </span>
                     </div>
 
