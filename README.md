@@ -7,16 +7,19 @@ Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum
 ## Fitur
 
 ### Role Notaris
-- Registrasi akun dengan pilihan **wilayah penempatan** (MPD 1, MPD 2, Simakuteng)
+- Akun dibuat/didaftarkan oleh **admin wilayah** (bukan daftar mandiri)
 - Dashboard riwayat laporan yang pernah dikirim
 - Input laporan bulanan: bulan & tahun, jumlah akta, legalisasi (disahkan), waarmerking (dibukukan), wasiat, protes
 - Upload file laporan (PDF, maks. 10 MB) — **unik per bulan** (tidak bisa duplikat)
 
-### Role Admin
-- Dashboard statistik laporan masuk per wilayah (per bulan/tahun)
-- Manajemen laporan: pencarian notaris, filter wilayah/bulan/tahun, lihat detail, unduh PDF
-- Rekapitulasi tahunan → drill-down per bulan
-- Tracking kepatuhan: daftar notaris yang **belum** melapor pada bulan/tahun/wilayah tertentu
+### Role Admin Wilayah (per wilayah)
+- Daftarkan & kelola notaris di wilayahnya sendiri
+- Dashboard, laporan, rekapitulasi, tracking kepatuhan — **selalu terbatas pada wilayahnya**
+
+### Role Superadmin
+- Akses penuh semua wilayah
+- Membuat/mengelola akun admin wilayah
+- Melihat laporan, rekapitulasi, dan kepatuhan seluruh wilayah
 
 ## Tech Stack
 
@@ -85,11 +88,20 @@ CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@example.com` | `admin123` |
-| Notaris (MPD 1) | `notaris1@example.com` | `notaris123` |
-| Notaris (MPD 2) | `notaris2@example.com` | `notaris123` |
+| Superadmin | `admin@example.com` | `admin123` |
+| Admin Wilayah — SIMAKUTENG | `adm.simakuteng@example.com` | `admin123` |
+| Admin Wilayah — RELEPARMU | `adm.releparmu@example.com` | `admin123` |
+| Admin Wilayah — KOTA BENGKULU | `adm.kotabengkulu@example.com` | `admin123` |
+| Notaris (SIMAKUTENG) | `notaris1@example.com` | `notaris123` |
+| Notaris (KOTA BENGKULU) | `notaris2@example.com` | `notaris123` |
 
 > Ganti password segera setelah masuk ke lingkungan produksi.
+
+### 4. Login berbasis wilayah
+
+- Landing page menampilkan 3 tombol wilayah: **SIMAKUTENG**, **RELEPARMU**, **KOTA BENGKULU**.
+- Pencet salah satu → halaman login wilayah tersebut. Akun notaris/admin wilayah dari wilayah lain **ditolak**.
+- **Superadmin** masuk lewat URL langsung: `http://127.0.0.1:8080/admin/login`.
 
 ## Menjalankan
 
