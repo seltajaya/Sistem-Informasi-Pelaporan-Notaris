@@ -29,22 +29,28 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('admin')->middleware(['auth', 'verified', 'admin'])->name('admin.')->group(function () {
-    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/laporan', [AdminReportController::class, 'index'])->name('reports.index');
-    Route::get('/laporan/{report}', [AdminReportController::class, 'show'])->name('reports.show');
-    Route::get('/laporan/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
+Route::prefix('admin')->middleware(['auth', 'verified'])->name('admin.')->group(function () {
+    // Rute yang dapat diakses oleh semua admin (admin_wilayah dan superadmin)
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/notaris', [NotarisController::class, 'index'])->name('notaris.index');
+        Route::post('/notaris', [NotarisController::class, 'store'])->name('notaris.store');
+        Route::get('/kepatuhan', [RecapController::class, 'tracking'])->name('recap.tracking');
+    });
 
-    Route::get('/rekapitulasi', [RecapController::class, 'annual'])->name('recap.annual');
-    Route::get('/rekapitulasi/{year}', [RecapController::class, 'monthly'])->name('recap.monthly');
-    Route::get('/kepatuhan', [RecapController::class, 'tracking'])->name('recap.tracking');
+    // Rute yang hanya dapat diakses oleh superadmin
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/laporan', [AdminReportController::class, 'index'])->name('reports.index');
+        Route::get('/laporan/{report}', [AdminReportController::class, 'show'])->name('reports.show');
+        Route::get('/laporan/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
 
-    Route::get('/admin-wilayah', [RegionAdminController::class, 'index'])->middleware('superadmin')->name('region-admins.index');
-    Route::post('/admin-wilayah', [RegionAdminController::class, 'store'])->middleware('superadmin')->name('region-admins.store');
-    Route::delete('/admin-wilayah/{user}', [RegionAdminController::class, 'destroy'])->middleware('superadmin')->name('region-admins.destroy');
+        Route::get('/rekapitulasi', [RecapController::class, 'annual'])->name('recap.annual');
+        Route::get('/rekapitulasi/{year}', [RecapController::class, 'monthly'])->name('recap.monthly');
 
-    Route::get('/notaris', [NotarisController::class, 'index'])->name('notaris.index');
-    Route::post('/notaris', [NotarisController::class, 'store'])->name('notaris.store');
+        Route::get('/admin-wilayah', [RegionAdminController::class, 'index'])->name('region-admins.index');
+        Route::post('/admin-wilayah', [RegionAdminController::class, 'store'])->name('region-admins.store');
+        Route::delete('/admin-wilayah/{user}', [RegionAdminController::class, 'destroy'])->name('region-admins.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';
