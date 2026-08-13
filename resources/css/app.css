@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900 antialiased;
+    }
+
+    ::selection {
+        @apply bg-kumham-700 text-white;
+    }
+
+    :focus-visible {
+        @apply outline-none ring-2 ring-kumham-500 ring-offset-2;
+    }
+
+    table {
+        @apply tabular-nums;
+    }
+}
+
+@layer components {
+    .institutional-header {
+        background-image:
+            radial-gradient(ellipse 60% 80% at 85% -10%, rgba(212, 175, 55, 0.22), transparent 55%),
+            linear-gradient(180deg, #122352 0%, #162A6B 60%, #1D3B8F 100%);
+    }
+
+    .section-eyebrow {
+        @apply inline-flex items-center gap-2 rounded-full bg-emas-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-kumham-800;
+    }
+
+    .card-panel {
+        @apply rounded-xl border border-gray-200 bg-white shadow-card;
+    }
+
+    .data-label {
+        @apply text-xs font-semibold uppercase tracking-wide text-gray-500;
+    }
+
+    .stat-value {
+        @apply font-display text-3xl font-extrabold tabular-nums tracking-tight text-kumham-800;
+    }
+}
