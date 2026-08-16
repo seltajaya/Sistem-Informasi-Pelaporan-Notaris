@@ -4,16 +4,15 @@
             <!-- Nav links -->
             <div class="flex">
                 <div class="hidden sm:flex sm:items-stretch sm:gap-1">
-                    <x-nav-link :href="Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard')"
-                        :active="Auth::user()->isAdmin() ? request()->routeIs('admin.dashboard') : request()->routeIs('dashboard')">
-                        Dashboard
-                    </x-nav-link>
+                    @if (! Auth::user()->isAdminWilayah())
+                        <x-nav-link :href="Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard')"
+                            :active="Auth::user()->isAdmin() ? request()->routeIs('admin.dashboard') : request()->routeIs('dashboard')">
+                            Dashboard
+                        </x-nav-link>
+                    @endif
 
                     @if (Auth::user()->isAdmin())
                         @if (Auth::user()->isSuperAdmin())
-                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                                Dashboard
-                            </x-nav-link>
                             <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
                                 Laporan
                             </x-nav-link>
@@ -92,14 +91,15 @@
     <!-- Responsive menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-gray-200">
         <div class="space-y-1 px-4 pt-2 pb-3">
-            <x-responsive-nav-link :href="Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard')"
-                :active="Auth::user()->isAdmin() ? request()->routeIs('admin.dashboard') : request()->routeIs('dashboard')">
-                Dashboard
-            </x-responsive-nav-link>
+            @if (! Auth::user()->isAdminWilayah())
+                <x-responsive-nav-link :href="Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard')"
+                    :active="Auth::user()->isAdmin() ? request()->routeIs('admin.dashboard') : request()->routeIs('dashboard')">
+                    Dashboard
+                </x-responsive-nav-link>
+            @endif
 
             @if (Auth::user()->isAdmin())
                 @if (Auth::user()->isSuperAdmin())
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">Laporan</x-responsive-nav-link>
                 @endif
                 <x-responsive-nav-link :href="route('admin.notaris.index')" :active="request()->routeIs('admin.notaris.*')">Notaris</x-responsive-nav-link>

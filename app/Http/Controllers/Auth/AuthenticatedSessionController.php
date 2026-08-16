@@ -51,7 +51,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended(
-            $user->isAdmin() ? route('admin.dashboard', absolute: false) : route('dashboard', absolute: false)
+            match ($user->role) {
+                'superadmin' => route('admin.dashboard', absolute: false),
+                'admin_wilayah' => route('admin.notaris.index', absolute: false),
+                default => route('dashboard', absolute: false),
+            }
         );
     }
 

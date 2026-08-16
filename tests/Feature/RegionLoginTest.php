@@ -55,4 +55,14 @@ class RegionLoginTest extends TestCase
     {
         $this->get('/login/simakuteng')->assertSee('SIMAKUTENG');
     }
+
+    public function test_admin_wilayah_login_redirects_to_notaris_page(): void
+    {
+        $this->post('/login/simakuteng', [
+            'email' => 'adm.simakuteng@example.com',
+            'password' => 'admin123',
+        ])->assertRedirect(route('admin.notaris.index', absolute: false));
+
+        $this->assertAuthenticated();
+    }
 }
