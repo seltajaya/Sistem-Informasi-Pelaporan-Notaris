@@ -53,6 +53,115 @@
             @endif
 
 
+            {{-- Kepatuhan Pelaporan --}}
+            @if ($totalNotaris > 0)
+                <div class="card-panel mb-6 overflow-hidden">
+                    {{-- Header --}}
+                    <div class="border-b border-gray-200 px-8 py-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-base font-extrabold tracking-tight text-kumham-950">
+                                    Kepatuhan Pelaporan Wilayah {{ $regionName }}
+                                </h3>
+                                <p class="mt-1.5 text-xs text-gray-500">
+                                    Berapa banyak notaris yang sudah melapor bulan ini di wilayah Anda.
+                                </p>
+                            </div>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-kumham-50 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-kumham-700 ring-1 ring-kumham-100">
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                {{ \Carbon\Carbon::create()->month($month)->locale('id')->isoFormat('MMMM') }} {{ $year }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{-- Ringkasan statistik --}}
+                    <div class="grid grid-cols-1 gap-px bg-gray-100 sm:grid-cols-2">
+                        <div class="bg-white px-8 py-6">
+                            <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-green-700">
+                                <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                                Sudah Melapor
+                            </p>
+                            <p class="mt-2 text-3xl font-extrabold tracking-tight text-kumham-950">
+                                {{ $sudahMelapor }}
+                                <span class="text-base font-bold text-gray-400">/ {{ $totalNotaris }}</span>
+                            </p>
+                            <p class="mt-1 text-xs font-medium text-gray-500">
+                                {{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}% notaris sudah menyampaikan laporan
+                            </p>
+                        </div>
+                        <div class="bg-white px-8 py-6">
+                            <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-700">
+                                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                                Belum Melapor
+                            </p>
+                            <p class="mt-2 text-3xl font-extrabold tracking-tight text-kumham-950">
+                                {{ $belumMelapor }}
+                                <span class="text-base font-bold text-gray-400">/ {{ $totalNotaris }}</span>
+                            </p>
+                            <p class="mt-1 text-xs font-medium text-gray-500">
+                                {{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}% notaris belum menyampaikan laporan
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Progress bar gabungan --}}
+                    <div class="border-t border-gray-100 px-8 py-6">
+                        <div class="mb-3 flex items-center justify-between text-xs font-medium text-gray-500">
+                            <span>Tingkat kepatuhan wilayah</span>
+                            <span class="font-bold text-kumham-800">
+                                {{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%
+                            </span>
+                        </div>
+                        <div class="flex h-3 w-full gap-1 overflow-hidden rounded-full bg-gray-100">
+                            <div class="h-full rounded-full bg-green-500 transition-all duration-500"
+                                style="width: {{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%"></div>
+                            <div class="h-full rounded-full bg-red-500 transition-all duration-500"
+                                style="width: {{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}%"></div>
+                        </div>
+                        <div class="mt-3.5 flex items-center gap-5 text-xs text-gray-500">
+                            <span class="flex items-center gap-2">
+                                <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                                Sudah: {{ $sudahMelapor }}
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                                Belum: {{ $belumMelapor }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{-- Daftar Belum Melapor --}}
+                    @if ($daftarBelum->isNotEmpty())
+                        <div class="border-t border-red-100 bg-red-50/60 px-8 py-6">
+                            <div class="flex items-center gap-2.5">
+                                <svg class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.5m0 3h.01M12 3l9 18H3l9-18z" /></svg>
+                                <p class="text-xs font-bold uppercase tracking-wider text-red-700">
+                                    Daftar notaris yang belum melapor
+                                </p>
+                            </div>
+                            <ul class="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                                @foreach ($daftarBelum as $notaris)
+                                    <li class="flex items-center gap-3 rounded-lg border border-red-100 bg-white px-4 py-3 shadow-sm">
+                                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-100 text-[11px] font-bold text-red-700">!</span>
+                                        <span class="truncate text-sm font-semibold text-gray-800">{{ $notaris->name }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="flex items-center gap-3 border-t border-green-100 bg-green-50/60 px-8 py-6">
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-100">
+                                <svg class="h-4.5 w-4.5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            </span>
+                            <p class="text-sm font-semibold text-green-800">
+                                Semua notaris di wilayah ini sudah melapor.
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+
             {{-- Panduan Pelaporan --}}
             <div class="card-panel overflow-hidden">
 
@@ -192,81 +301,6 @@
 
                 </div>
             </div>
-
-
-            {{-- Kepatuhan Pelaporan --}}
-            @if ($totalNotaris > 0)
-                <div class="card-panel mt-5 overflow-hidden">
-                    <div class="border-b border-gray-200 px-5 py-4">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <h3 class="text-sm font-bold text-kumham-900">
-                                Kepatuhan Pelaporan Wilayah {{ $regionName }}
-                            </h3>
-                            <span class="inline-flex rounded-full bg-kumham-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-kumham-700">
-                                {{ \Carbon\Carbon::create()->month($month)->locale('id')->isoFormat('MMMM') }} {{ $year }}
-                            </span>
-                        </div>
-                        <p class="mt-1 text-xs text-gray-500">
-                            Berapa banyak notaris yang sudah melapor bulan ini di wilayah Anda.
-                        </p>
-                    </div>
-
-                    <div class="space-y-4 px-5 py-5">
-                        {{-- Bar Sudah Melapor --}}
-                        <div>
-                            <div class="mb-1 flex items-center justify-between text-sm">
-                                <span class="font-semibold text-green-700">Sudah Melapor</span>
-                                <span class="font-bold text-kumham-900">
-                                    {{ $sudahMelapor }} dari {{ $totalNotaris }}
-                                    ({{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%)
-                                </span>
-                            </div>
-                            <div class="h-3 w-full overflow-hidden rounded-full bg-gray-100">
-                                <div class="h-full rounded-full bg-green-500 transition-all"
-                                    style="width: {{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%"></div>
-                            </div>
-                        </div>
-
-                        {{-- Bar Belum Melapor --}}
-                        <div>
-                            <div class="mb-1 flex items-center justify-between text-sm">
-                                <span class="font-semibold text-red-700">Belum Melapor</span>
-                                <span class="font-bold text-kumham-900">
-                                    {{ $belumMelapor }} dari {{ $totalNotaris }}
-                                    ({{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}%)
-                                </span>
-                            </div>
-                            <div class="h-3 w-full overflow-hidden rounded-full bg-gray-100">
-                                <div class="h-full rounded-full bg-red-500 transition-all"
-                                    style="width: {{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Daftar Belum Melapor --}}
-                    @if ($daftarBelum->isNotEmpty())
-                        <div class="border-t border-red-100 bg-red-50/50 px-5 py-4">
-                            <p class="mb-3 text-xs font-bold uppercase tracking-wider text-red-700">
-                                Daftar notaris yang belum melapor:
-                            </p>
-                            <ul class="space-y-1.5">
-                                @foreach ($daftarBelum as $notaris)
-                                    <li class="flex items-center gap-2 text-sm text-gray-700">
-                                        <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-700">!</span>
-                                        {{ $notaris->name }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @else
-                        <div class="border-t border-green-100 bg-green-50/50 px-5 py-4">
-                            <p class="text-sm font-semibold text-green-700">
-                                Semua notaris di wilayah ini sudah melapor.
-                            </p>
-                        </div>
-                    @endif
-                </div>
-            @endif
 
 
             {{-- Butuh Bantuan --}}
