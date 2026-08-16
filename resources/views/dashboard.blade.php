@@ -194,6 +194,81 @@
             </div>
 
 
+            {{-- Kepatuhan Pelaporan --}}
+            @if ($totalNotaris > 0)
+                <div class="card-panel mt-5 overflow-hidden">
+                    <div class="border-b border-gray-200 px-5 py-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-sm font-bold text-kumham-900">
+                                Kepatuhan Pelaporan Wilayah {{ $regionName }}
+                            </h3>
+                            <span class="inline-flex rounded-full bg-kumham-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-kumham-700">
+                                {{ \Carbon\Carbon::create()->month($month)->locale('id')->isoFormat('MMMM') }} {{ $year }}
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Berapa banyak notaris yang sudah melapor bulan ini di wilayah Anda.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 px-5 py-5">
+                        {{-- Bar Sudah Melapor --}}
+                        <div>
+                            <div class="mb-1 flex items-center justify-between text-sm">
+                                <span class="font-semibold text-green-700">Sudah Melapor</span>
+                                <span class="font-bold text-kumham-900">
+                                    {{ $sudahMelapor }} dari {{ $totalNotaris }}
+                                    ({{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%)
+                                </span>
+                            </div>
+                            <div class="h-3 w-full overflow-hidden rounded-full bg-gray-100">
+                                <div class="h-full rounded-full bg-green-500 transition-all"
+                                    style="width: {{ $totalNotaris ? round(($sudahMelapor / $totalNotaris) * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+
+                        {{-- Bar Belum Melapor --}}
+                        <div>
+                            <div class="mb-1 flex items-center justify-between text-sm">
+                                <span class="font-semibold text-red-700">Belum Melapor</span>
+                                <span class="font-bold text-kumham-900">
+                                    {{ $belumMelapor }} dari {{ $totalNotaris }}
+                                    ({{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}%)
+                                </span>
+                            </div>
+                            <div class="h-3 w-full overflow-hidden rounded-full bg-gray-100">
+                                <div class="h-full rounded-full bg-red-500 transition-all"
+                                    style="width: {{ $totalNotaris ? round(($belumMelapor / $totalNotaris) * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Daftar Belum Melapor --}}
+                    @if ($daftarBelum->isNotEmpty())
+                        <div class="border-t border-red-100 bg-red-50/50 px-5 py-4">
+                            <p class="mb-3 text-xs font-bold uppercase tracking-wider text-red-700">
+                                Daftar notaris yang belum melapor:
+                            </p>
+                            <ul class="space-y-1.5">
+                                @foreach ($daftarBelum as $notaris)
+                                    <li class="flex items-center gap-2 text-sm text-gray-700">
+                                        <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-700">!</span>
+                                        {{ $notaris->name }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="border-t border-green-100 bg-green-50/50 px-5 py-4">
+                            <p class="text-sm font-semibold text-green-700">
+                                Semua notaris di wilayah ini sudah melapor.
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+
             {{-- Butuh Bantuan --}}
             <div class="mt-5">
 
