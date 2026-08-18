@@ -13,7 +13,54 @@
         <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            /* Animasi kilau LAPORIS */
+            @keyframes laporisShine {
+                0% {
+                    background-position: 200% center;
+                }
+                100% {
+                    background-position: -200% center;
+                }
+            }
+
+            .laporis-title {
+                display: inline-block;
+                background: linear-gradient(
+                    110deg,
+                    #facc15 0%,
+                    #facc15 35%,
+                    #fff7b2 45%,
+                    #ffffff 50%,
+                    #fff7b2 55%,
+                    #facc15 65%,
+                    #facc15 100%
+                );
+                background-size: 250% auto;
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: laporisShine 3.5s linear infinite;
+            }
+
+            .laporis-capsule {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 7px 18px;
+                border: 1px solid rgba(250, 204, 21, 0.28);
+                border-radius: 9999px;
+                background: rgba(255, 255, 255, 0.08);
+                box-shadow:
+                    0 8px 25px rgba(0, 0, 0, 0.10),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
+        </style>
     </head>
+
     <body class="font-sans text-gray-900 antialiased flex flex-col min-h-screen">
         <x-layouts.partials.header title="Portal Pelaporan Notaris" />
 
@@ -30,10 +77,24 @@
             {{-- Hero --}}
             <section class="institutional-header relative overflow-hidden text-white">
                 <div class="mx-auto max-w-container px-4 sm:px-6 lg:px-8 py-20 text-center">
-                    <p class="section-eyebrow mx-auto mb-5 !bg-white/10 !text-emas-300">Layanan Digital Notaris</p>
+
+                    {{-- Identitas LAPORIS --}}
+                    <div class="mx-auto mb-10 flex flex-col items-center">
+                        <h2 class="laporis-title text-4xl font-extrabold tracking-tight sm:text-5xl">
+                            LAPORIS
+                        </h2>
+
+                        <div class="laporis-capsule mt-4">
+                            <span class="text-sm font-semibold tracking-wide text-white/90">
+                                Laporan Online Notaris
+                            </span>
+                        </div>
+                    </div>
+
                     <h1 class="mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl text-balance">
                         Pelaporan Notaris, Kini Cepat &amp; Transparan
                     </h1>
+
                     <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
                         Sampaikan laporan bulanan dan tahunan secara digital kepada Majelis Pengawas Daerah
                         melalui portal resmi Kantor Wilayah Kementerian Hukum dan HAM Bengkulu.
@@ -42,7 +103,7 @@
                     <div class="mt-8 flex justify-center">
                         <div class="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
                             @foreach ([
-                                ['name' => 'SIMAKUTENG', 'slug' => 'simakuteng', 'desc' => 'Seluma, Bengkulu Selatan, Manna, Kaur'],
+                                ['name' => 'SEMAKUTENG', 'slug' => 'semakuteng', 'desc' => 'Seluma, Bengkulu Selatan, Manna, Kaur'],
                                 ['name' => 'RELEPARMU', 'slug' => 'releparmu', 'desc' => 'Rejang Lebong, Lebong, Kepahiang'],
                                 ['name' => 'KOTA BENGKULU', 'slug' => 'kota-bengkulu', 'desc' => 'Kota Bengkulu & sekitarnya'],
                             ] as $wilayah)
