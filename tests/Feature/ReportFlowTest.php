@@ -25,6 +25,7 @@ class ReportFlowTest extends TestCase
             'name' => 'Notaris A',
             'email' => 'a@test.com',
             'password' => bcrypt('password'),
+            'role' => 'notaris',
             'region_id' => $region->id,
         ]);
         $admin = User::create([
@@ -62,6 +63,7 @@ class ReportFlowTest extends TestCase
             'name' => 'Notaris B',
             'email' => 'b@test.com',
             'password' => bcrypt('password'),
+            'role' => 'notaris',
             'region_id' => $this->region()->id,
         ]);
 
@@ -88,12 +90,14 @@ class ReportFlowTest extends TestCase
             'name' => 'Sudah Lapor',
             'email' => 's@test.com',
             'password' => bcrypt('password'),
+            'role' => 'notaris',
             'region_id' => $region->id,
         ]);
         $missing = User::create([
             'name' => 'Belum Lapor',
             'email' => 'm@test.com',
             'password' => bcrypt('password'),
+            'role' => 'notaris',
             'region_id' => $region->id,
         ]);
         $admin = User::create([
@@ -123,6 +127,7 @@ class ReportFlowTest extends TestCase
             'name' => 'Notaris C',
             'email' => 'c@test.com',
             'password' => bcrypt('password'),
+            'role' => 'notaris',
             'region_id' => $this->region()->id,
         ]);
 

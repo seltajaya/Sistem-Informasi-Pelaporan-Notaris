@@ -37,6 +37,11 @@ class NotarisController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
+            'region_id' => [
+                $request->user()->isSuperAdmin() ? 'required' : 'nullable',
+                'integer',
+                'exists:regions,id',
+            ],
         ]);
 
         User::create([
@@ -46,7 +51,7 @@ class NotarisController extends Controller
             'role' => 'notaris',
             'region_id' => $request->user()->isAdminWilayah()
                 ? $request->user()->region_id
-                : (int) $request->input('region_id'),
+                : (int) $data['region_id'],
         ]);
 
         return redirect()->route('admin.notaris.index')->with('status', 'Notaris berhasil didaftarkan.');
