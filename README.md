@@ -9,6 +9,7 @@ Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum
 ### Role Notaris
 - Akun dibuat/didaftarkan oleh **admin wilayah** (bukan daftar mandiri)
 - Dashboard riwayat laporan yang pernah dikirim
+- **Grafik kepatuhan wilayah**: bar chart "Sudah/Belum Melapor" bulan berjalan + daftar nama notaris yang belum melapor
 - Input laporan bulanan: bulan & tahun, jumlah akta, legalisasi (disahkan), waarmerking (dibukukan), wasiat, protes
 - Upload file laporan (PDF, maks. 10 MB) — **unik per bulan** (tidak bisa duplikat)
 
@@ -30,7 +31,8 @@ Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum
 | Database | MySQL / MariaDB |
 | Frontend | Blade + Tailwind CSS 3 + Alpine.js |
 | Auth | Laravel Breeze (blade) |
-| Web server | Nginx 1.28 + PHP-FPM (php-cgi) |
+| Import Excel | phpoffice/phpspreadsheet |
+| Web server | Nginx 1.28 + PHP-CGI pool (8 proses FastCGI) |
 
 ## Struktur Utama
 
@@ -40,18 +42,20 @@ app/
 │   ├── Controllers/
 │   │   ├── Admin/          # Dashboard, Laporan, Rekapitulasi & Tracking (admin)
 │   │   ├── Auth/           # Auth Breeze
-│   │   ├── DashboardController.php
+│   │   ├── DashboardController.php   # Dashboard notaris + grafik kepatuhan
 │   │   └── ReportController.php  # CRUD laporan notaris
-│   └── Middleware/EnsureAdmin.php
+│   └── Middleware/         # EnsureAdmin, EnsureSuperAdmin, EnsureNotaris
 ├── Models/                 # User, Region, Report
 database/
 ├── migrations/             # regions, users, reports
-└── seeders/DatabaseSeeder.php
+└── seeders/
+    ├── DatabaseSeeder.php      # wilayah + akun awal
+    └── NotarisImportSeeder.php # import notaris dari Excel
 resources/views/
 ├── components/             # Button, input, auth-card, layouts/partials (logo, header, footer)
 ├── layouts/                # app (autentikasi), guest (auth), navigation
-├── auth/                   # login, register, dll
-├── admin/                  # dashboard, laporan, rekapitulasi, tracking
+├── auth/                   # login wilayah, dll
+├── admin/                  # dashboard, laporan, rekapitulasi, tracking, notaris, region-admins
 ├── reports/                # form input laporan
 └── welcome.blade.php       # landing page institusional
 ```
@@ -59,7 +63,7 @@ resources/views/
 ## Instalasi Lokal
 
 ### 1. Prasyarat
-- PHP 8.2+ (dengan ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `zip`)
+- PHP 8.2+ (dengan ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `zip`, `gd`, `xml` — `gd`/`zip`/`xml` untuk import Excel)
 - Composer 2.x
 - MySQL / MariaDB
 - Node.js + npm (untuk build aset)
@@ -98,6 +102,19 @@ CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 > Ganti password segera setelah masuk ke lingkungan produksi.
 
+### 3b. Import notaris dari Excel (opsional)
+
+Import daftar notaris aktif (±135 orang) dari `storage/app/import/data-notaris.xlsx`
+ke akun login. Email otomatis `notaris.{NIK}@notaris.local`, password default `notaris123`,
+region mengikuti kabupaten penempatan:
+
+```bash
+php artisan db:seed --class=NotarisImportSeeder
+```
+
+Seeder **idempoten** (aman dijalankan ulang) dan hanya meng-import status *aktif*
+(yang "Belum Aktif"/duplikat/baris kosong di-skip). Ganti password default setelah import.
+
 ### 4. Login berbasis wilayah
 
 - Landing page menampilkan 3 tombol wilayah: **SEMAKUTENG**, **RELEPARMU**, **KOTA BENGKULU**.
@@ -113,12 +130,15 @@ php artisan serve
 # buka http://127.0.0.1:8000
 ```
 
-### Opsi B — Nginx + PHP-FPM (direkomendasikan)
+### Opsi B — Nginx + PHP-CGI pool (direkomendasikan)
 
 Instalasi nginx di `D:\App\nginx\nginx-1.28.1\` dengan konfigurasi:
 - Listen port **8080** (port 80 dipakai Apache XAMPP)
 - Root → `maganghub/public`
-- PHP-FPM via `php-cgi.exe` XAMPP pada `127.0.0.1:9000`
+- **Pool 8 proses `php-cgi.exe`** (port 9000-9007) via `upstream phpcgi` — Windows
+  php-cgi hanya menangani 1 request per proses, jadi pool wajib untuk banyak user bersamaan
+- **OPcache aktif** di `php.ini` (bawaan XAMPP ter-komentar) — tanpa ini setiap request
+  compile ulang ribuan file Laravel
 - Blokir akses file tersembunyi (`.env`), `client_max_body_size 12m`, gzip + cache aset
 
 Start (jalankan sekali, atau setelah restart komputer):
@@ -129,6 +149,17 @@ powershell -ExecutionPolicy Bypass -File D:\App\nginx\start-nginx.ps1
 ```
 
 Kemudian buka `http://127.0.0.1:8080`.
+
+#### Performa (hasil load test)
+
+| Skenario | Hasil |
+|---|---|
+| Halaman login, 40 concurrent | ~250 req/s, latency ±160 ms |
+| Halaman login, **150 concurrent** | latency ±620 ms, 0 gagal / 600 request |
+
+> Catatan dev: jangan menjalankan `php artisan optimize` lalu `php artisan test`
+> di mesin yang sama — cache config membuat suite testing hang. Jalankan
+> `php artisan optimize:clear` dulu. Cache produksi dilakukan di server (lihat Deployment).
 
 ### Akses dari perangkat lain (LAN)
 
@@ -156,16 +187,23 @@ Tanpa file tersebut, aplikasi menampilkan *placeholder mark* (timbangan emas) + 
 php artisan test
 ```
 
-Suite mencakup: registrasi (pilih wilayah), submit laporan + admin melihatnya, penolakan laporan duplikat, tracking notaris belum lapor, dan RBAC (notaris tidak dapat akses halaman admin).
+Suite mencakup:
+- RBAC lengkap (notaris/admin wilayah/superadmin, matrix akses per halaman)
+- Keamanan: IDOR download laporan, mass assignment role/region, reject upload non-PDF, validasi region_id
+- Alur laporan: submit + admin melihat, tolak duplikat bulan yang sama
+- Login wilayah (tolak akun lintas wilayah) & redirect per role
+- Grafik kepatuhan dashboard notaris (hitungan sudah/belum melapor per wilayah)
+- Import Excel (filter status aktif, mapping region, deduplikasi NIK, idempoten)
 
 ## Deployment
 
 Sebelum deploy ke hosting/VPS:
 1. `APP_ENV=production` dan `APP_DEBUG=false`
-2. Jalankan `php artisan config:cache` dan `php artisan route:cache`
-3. Atur SMTP nyata pada `MAIL_*` (saat ini `MAIL_MAILER=log`)
-4. Migrasi + seed, lalu ubah password default
-5. Arahkan domain ke `public/` document root (jangan ke root project)
+2. Di server: `php artisan optimize` (config + route + views cache)
+3. Aktifkan **OPcache** pada PHP server
+4. Atur SMTP nyata pada `MAIL_*` (saat ini `MAIL_MAILER=log`)
+5. Migrasi + seed (+ import notaris jika perlu), lalu ubah semua password default
+6. Arahkan domain ke `public/` document root (jangan ke root project)
 
 ## Lisensi
 
