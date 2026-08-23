@@ -15,7 +15,7 @@ return new class extends Migration
 
         DB::table('regions')->where('name', 'MPD 1')->update(['name' => 'KOTA BENGKULU', 'slug' => 'kota-bengkulu']);
         DB::table('regions')->where('name', 'MPD 2')->update(['name' => 'RELEPARMU', 'slug' => 'releparmu']);
-        DB::table('regions')->where('name', 'Simakuteng')->update(['name' => 'SIMAKUTENG', 'slug' => 'simakuteng']);
+        DB::table('regions')->where('name', 'Simakuteng')->update(['name' => 'SEMAKUTENG', 'slug' => 'semakuteng']);
         DB::table('regions')->where('name', 'MPD Lainnya')->delete();
 
         DB::table('users')->where('role', 'admin')->update(['role' => 'superadmin']);

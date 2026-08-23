@@ -16,8 +16,8 @@ class RoleRegionMigrationTest extends TestCase
         $this->seed();
 
         $names = Region::orderBy('name')->pluck('name')->all();
-        $this->assertSame(['KOTA BENGKULU', 'RELEPARMU', 'SIMAKUTENG'], $names);
-        $this->assertSame('simakuteng', Region::where('name', 'SIMAKUTENG')->first()->slug);
+        $this->assertSame(['KOTA BENGKULU', 'RELEPARMU', 'SEMAKUTENG'], $names);
+        $this->assertSame('semakuteng', Region::where('name', 'SEMAKUTENG')->first()->slug);
         $this->assertTrue(User::where('email', 'admin@example.com')->first()->isSuperAdmin());
         $this->assertTrue(User::where('email', 'adm.kotabengkulu@example.com')->first()->isAdminWilayah());
         $this->assertTrue(User::where('email', 'notaris1@example.com')->first()->isNotaris());

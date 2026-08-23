@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Role values: `superadmin`, `admin_wilayah`, `notaris` (string, no enum constraint).
-- Region values (nama & slug): `SIMAKUTENG`/`simakuteng`, `RELEPARMU`/`releparmu`, `KOTA BENGKULU`/`kota-bengkulu`. Region lama `MPD Lainnya` dihapus.
+- Region values (nama & slug): `semakuteng`/`semakuteng`, `RELEPARMU`/`releparmu`, `KOTA BENGKULU`/`kota-bengkulu`. Region lama `MPD Lainnya` dihapus.
 - Login per wilayah: akun `notaris`/`admin_wilayah` harus punya region yang cocok dengan slug yang dipilih; `superadmin` bebas.
 - Admin wilayah hanya melihat data region sendiri; superadmin bisa memfilter semua.
 - Tidak ada halaman daftar publik (route `register` dihapus).
@@ -54,8 +54,8 @@ class RoleRegionMigrationTest extends TestCase
         $this->seed();
 
         $names = Region::orderBy('name')->pluck('name')->all();
-        $this->assertSame(['KOTA BENGKULU', 'RELEPARMU', 'SIMAKUTENG'], $names);
-        $this->assertSame('simakuteng', Region::where('name', 'SIMAKUTENG')->first()->slug);
+        $this->assertSame(['KOTA BENGKULU', 'RELEPARMU', 'semakuteng'], $names);
+        $this->assertSame('semakuteng', Region::where('name', 'semakuteng')->first()->slug);
         $this->assertTrue(User::where('email', 'admin@example.com')->first()->isSuperAdmin());
         $this->assertTrue(User::where('email', 'adm.kotabengkulu@example.com')->first()->isAdminWilayah());
         $this->assertTrue(User::where('email', 'notaris1@example.com')->first()->isNotaris());
@@ -90,7 +90,7 @@ return new class extends Migration
 
         DB::table('regions')->where('name', 'MPD 1')->update(['name' => 'KOTA BENGKULU', 'slug' => 'kota-bengkulu']);
         DB::table('regions')->where('name', 'MPD 2')->update(['name' => 'RELEPARMU', 'slug' => 'releparmu']);
-        DB::table('regions')->where('name', 'Simakuteng')->update(['name' => 'SIMAKUTENG', 'slug' => 'simakuteng']);
+        DB::table('regions')->where('name', 'semakuteng')->update(['name' => 'semakuteng', 'slug' => 'semakuteng']);
         DB::table('regions')->where('name', 'MPD Lainnya')->delete();
 
         DB::table('users')->where('role', 'admin')->update(['role' => 'superadmin']);
@@ -150,7 +150,7 @@ public function run(): void
     $regions = [
         'KOTA BENGKULU' => 'kota-bengkulu',
         'RELEPARMU' => 'releparmu',
-        'SIMAKUTENG' => 'simakuteng',
+        'semakuteng' => 'semakuteng',
     ];
 
     foreach ($regions as $name => $slug) {
@@ -166,7 +166,7 @@ public function run(): void
     $regionBySlug = fn ($slug) => Region::where('slug', $slug)->first()->id;
 
     foreach ([
-        ['name' => 'Admin Simakuteng', 'email' => 'adm.simakuteng@example.com', 'region' => 'simakuteng'],
+        ['name' => 'Admin semakuteng', 'email' => 'adm.semakuteng@example.com', 'region' => 'semakuteng'],
         ['name' => 'Admin Releparmu', 'email' => 'adm.releparmu@example.com', 'region' => 'releparmu'],
         ['name' => 'Admin Kota Bengkulu', 'email' => 'adm.kotabengkulu@example.com', 'region' => 'kota-bengkulu'],
     ] as $admin) {
@@ -178,7 +178,7 @@ public function run(): void
 
     User::factory()->updateOrCreate(
         ['email' => 'notaris1@example.com'],
-        ['name' => 'Notaris Simakuteng', 'password' => bcrypt('notaris123'), 'role' => 'notaris', 'region_id' => $regionBySlug('simakuteng')]
+        ['name' => 'Notaris semakuteng', 'password' => bcrypt('notaris123'), 'role' => 'notaris', 'region_id' => $regionBySlug('semakuteng')]
     );
 
     User::factory()->updateOrCreate(
@@ -240,8 +240,8 @@ class RegionLoginTest extends TestCase
 
     public function test_notaris_login_from_wrong_region_is_rejected(): void
     {
-        $notaris = User::where('email', 'notaris1@example.com')->first(); // SIMAKUTENG
-        $this->assertSame('simakuteng', Region::find($notaris->region_id)->slug);
+        $notaris = User::where('email', 'notaris1@example.com')->first(); // semakuteng
+        $this->assertSame('semakuteng', Region::find($notaris->region_id)->slug);
 
         $response = $this->post('/login/kota-bengkulu', [
             'email' => 'notaris1@example.com',
@@ -254,7 +254,7 @@ class RegionLoginTest extends TestCase
 
     public function test_notaris_login_from_own_region_succeeds(): void
     {
-        $this->post('/login/simakuteng', [
+        $this->post('/login/semakuteng', [
             'email' => 'notaris1@example.com',
             'password' => 'notaris123',
         ])->assertRedirect(route('dashboard', absolute: false));
@@ -274,7 +274,7 @@ class RegionLoginTest extends TestCase
 
     public function test_region_login_page_shows_region_badge(): void
     {
-        $this->get('/login/simakuteng')->assertSee('SIMAKUTENG');
+        $this->get('/login/semakuteng')->assertSee('semakuteng');
     }
 }
 ```
@@ -375,7 +375,7 @@ public function store(LoginRequest $request): RedirectResponse
 ```blade
 <div class="mt-8 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
     @foreach ([
-        ['name' => 'SIMAKUTENG', 'slug' => 'simakuteng', 'desc' => 'Seluma, Bengkulu Selatan, Manna, Kaur'],
+        ['name' => 'semakuteng', 'slug' => 'semakuteng', 'desc' => 'Seluma, Bengkulu Selatan, Manna, Kaur'],
         ['name' => 'RELEPARMU', 'slug' => 'releparmu', 'desc' => 'Rejang Lebong, Lebong, Kepahiang'],
         ['name' => 'KOTA BENGKULU', 'slug' => 'kota-bengkulu', 'desc' => 'Kota Bengkulu & sekitarnya'],
     ] as $wilayah)
@@ -443,7 +443,7 @@ class AdminScopeTest extends TestCase
 
     public function test_admin_wilayah_only_sees_own_region_reports(): void
     {
-        $regionA = Region::where('slug', 'simakuteng')->first();
+        $regionA = Region::where('slug', 'semakuteng')->first();
         $regionB = Region::where('slug', 'kota-bengkulu')->first();
         $notarisB = User::where('email', 'notaris2@example.com')->first();
 
@@ -455,7 +455,7 @@ class AdminScopeTest extends TestCase
             'file_path' => 'reports/x.pdf',
         ]);
 
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
 
         $this->actingAs($admin)
             ->get('/admin/laporan')
@@ -464,7 +464,7 @@ class AdminScopeTest extends TestCase
 
     public function test_admin_wilayah_cannot_access_superadmin_pages(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
 
         $this->actingAs($admin)->get('/admin/admin-wilayah')->assertForbidden();
     }
@@ -476,7 +476,7 @@ class AdminScopeTest extends TestCase
         $this->actingAs($superadmin)
             ->get('/admin/admin-wilayah')
             ->assertOk()
-            ->assertSee('Admin Simakuteng');
+            ->assertSee('Admin semakuteng');
     }
 }
 ```
@@ -760,8 +760,8 @@ class NotarisRegistrationTest extends TestCase
 
     public function test_admin_wilayah_can_register_notaris_in_own_region(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
-        $region = Region::where('slug', 'simakuteng')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
+        $region = Region::where('slug', 'semakuteng')->first();
 
         $response = $this->actingAs($admin)->post('/admin/notaris', [
             'name' => 'Notaris Baru',
@@ -790,7 +790,7 @@ class NotarisRegistrationTest extends TestCase
 
     public function test_admin_wilayah_cannot_register_notaris_outside_own_region(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
 
         $this->actingAs($admin)->post('/admin/notaris', [
             'name' => 'X',
@@ -799,7 +799,7 @@ class NotarisRegistrationTest extends TestCase
         ]);
 
         $created = User::where('email', 'x@test.com')->first();
-        $this->assertSame(Region::where('slug', 'simakuteng')->first()->id, $created->region_id);
+        $this->assertSame(Region::where('slug', 'semakuteng')->first()->id, $created->region_id);
     }
 
     public function test_public_register_page_is_gone(): void
@@ -1199,12 +1199,12 @@ Jalankan nginx+php-cgi jika belum (lihat README), lalu:
 
 ```bash
 curl -s -o NUL -w "%{http_code}\n" http://127.0.0.1:8080/            # 200
-curl -s -o NUL -w "%{http_code}\n" http://127.0.0.1:8080/login/simakuteng  # 200
+curl -s -o NUL -w "%{http_code}\n" http://127.0.0.1:8080/login/semakuteng  # 200
 curl -s -o NUL -w "%{http_code}\n" http://127.0.0.1:8080/admin/login # 200
 curl -s -o NUL -w "%{http_code}\n" http://127.0.0.1:8080/register    # 404
 ```
 
-Login manual via browser: `adm.simakuteng@example.com/admin123` dari `/login/simakuteng` → dashboard admin wilayah; `admin@example.com/admin123` dari `/admin/login` → dashboard superadmin.
+Login manual via browser: `adm.semakuteng@example.com/admin123` dari `/login/semakuteng` → dashboard admin wilayah; `admin@example.com/admin123` dari `/admin/login` → dashboard superadmin.
 
 - [ ] **Step 5: Update README**
 

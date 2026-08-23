@@ -19,8 +19,8 @@ class NotarisRegistrationTest extends TestCase
 
     public function test_admin_wilayah_can_register_notaris_in_own_region(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
-        $region = Region::where('slug', 'simakuteng')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
+        $region = Region::where('slug', 'semakuteng')->first();
 
         $response = $this->actingAs($admin)->post('/admin/notaris', [
             'name' => 'Notaris Baru',
@@ -49,7 +49,7 @@ class NotarisRegistrationTest extends TestCase
 
     public function test_admin_wilayah_cannot_register_notaris_outside_own_region(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
 
         $this->actingAs($admin)->post('/admin/notaris', [
             'name' => 'X',
@@ -58,7 +58,7 @@ class NotarisRegistrationTest extends TestCase
         ]);
 
         $created = User::where('email', 'x@test.com')->first();
-        $this->assertSame(Region::where('slug', 'simakuteng')->first()->id, $created->region_id);
+        $this->assertSame(Region::where('slug', 'semakuteng')->first()->id, $created->region_id);
     }
 
     public function test_public_register_page_is_gone(): void
@@ -68,7 +68,7 @@ class NotarisRegistrationTest extends TestCase
 
     public function test_admin_wilayah_cannot_access_superadmin_pages(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
 
         $this->actingAs($admin)->get('/admin/admin-wilayah')->assertForbidden();
     }
@@ -80,6 +80,6 @@ class NotarisRegistrationTest extends TestCase
         $this->actingAs($superadmin)
             ->get('/admin/admin-wilayah')
             ->assertOk()
-            ->assertSee('Admin Simakuteng');
+            ->assertSee('Admin Semakuteng');
     }
 }

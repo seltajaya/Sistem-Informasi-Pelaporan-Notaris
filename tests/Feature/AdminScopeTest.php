@@ -20,7 +20,7 @@ class AdminScopeTest extends TestCase
 
     public function test_admin_wilayah_only_has_notaris_and_kepatuhan(): void
     {
-        $admin = User::where('email', 'adm.simakuteng@example.com')->first();
+        $admin = User::where('email', 'adm.semakuteng@example.com')->first();
         $this->actingAs($admin);
 
         $this->get(route('admin.dashboard'))->assertStatus(403);

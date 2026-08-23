@@ -19,8 +19,8 @@ class RegionLoginTest extends TestCase
 
     public function test_notaris_login_from_wrong_region_is_rejected(): void
     {
-        $notaris = User::where('email', 'notaris1@example.com')->first(); // SIMAKUTENG
-        $this->assertSame('simakuteng', Region::find($notaris->region_id)->slug);
+        $notaris = User::where('email', 'notaris1@example.com')->first(); // SEMAKUTENG
+        $this->assertSame('semakuteng', Region::find($notaris->region_id)->slug);
 
         $response = $this->post('/login/kota-bengkulu', [
             'email' => 'notaris1@example.com',
@@ -33,7 +33,7 @@ class RegionLoginTest extends TestCase
 
     public function test_notaris_login_from_own_region_succeeds(): void
     {
-        $this->post('/login/simakuteng', [
+        $this->post('/login/semakuteng', [
             'email' => 'notaris1@example.com',
             'password' => 'notaris123',
         ])->assertRedirect(route('dashboard', absolute: false));
@@ -53,13 +53,13 @@ class RegionLoginTest extends TestCase
 
     public function test_region_login_page_shows_region_badge(): void
     {
-        $this->get('/login/simakuteng')->assertSee('SIMAKUTENG');
+        $this->get('/login/semakuteng')->assertSee('SEMAKUTENG');
     }
 
     public function test_admin_wilayah_login_redirects_to_notaris_page(): void
     {
-        $this->post('/login/simakuteng', [
-            'email' => 'adm.simakuteng@example.com',
+        $this->post('/login/semakuteng', [
+            'email' => 'adm.semakuteng@example.com',
             'password' => 'admin123',
         ])->assertRedirect(route('admin.notaris.index', absolute: false));
 

@@ -126,7 +126,7 @@
                         <div class="grid w-full max-w-3xl grid-cols-1 gap-px overflow-hidden rounded-xl bg-white/10 sm:grid-cols-3">
                             @foreach ([
                                 ['value' => '3', 'label' => 'Wilayah Pengawasan'],
-                                ['value' => 'SIMAKUTENG · RELEPARMU', 'label' => 'KOTA BENGKULU'],
+                                ['value' => 'SEMAKUTENG · RELEPARMU', 'label' => 'KOTA BENGKULU'],
                                 ['value' => '100%', 'label' => 'Laporan Digital'],
                             ] as $stat)
                                 <div class="bg-kumham-800/60 px-6 py-6 text-center">
@@ -176,7 +176,7 @@
 
                     <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                         @foreach ([
-                            ['name' => 'SIMAKUTENG', 'desc' => 'Seluma, Bengkulu Selatan, Manna, dan Kaur'],
+                            ['name' => 'SEMAKUTENG', 'desc' => 'Seluma, Bengkulu Selatan, Manna, dan Kaur'],
                             ['name' => 'RELEPARMU', 'desc' => 'Rejang Lebong, Lebong, dan Kepahiang'],
                             ['name' => 'KOTA BENGKULU', 'desc' => 'Kota Bengkulu dan sekitarnya'],
                         ] as $i => $wilayah)

@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $regions = [
             'KOTA BENGKULU' => 'kota-bengkulu',
             'RELEPARMU' => 'releparmu',
-            'SIMAKUTENG' => 'simakuteng',
+            'SEMAKUTENG' => 'semakuteng',
         ];
 
         foreach ($regions as $name => $slug) {
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $regionBySlug = fn ($slug) => Region::where('slug', $slug)->first()->id;
 
         foreach ([
-            ['name' => 'Admin Simakuteng', 'email' => 'adm.simakuteng@example.com', 'region' => 'simakuteng'],
+            ['name' => 'Admin Semakuteng', 'email' => 'adm.semakuteng@example.com', 'region' => 'semakuteng'],
             ['name' => 'Admin Releparmu', 'email' => 'adm.releparmu@example.com', 'region' => 'releparmu'],
             ['name' => 'Admin Kota Bengkulu', 'email' => 'adm.kotabengkulu@example.com', 'region' => 'kota-bengkulu'],
         ] as $admin) {
@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         User::updateOrCreate(
             ['email' => 'notaris1@example.com'],
-            ['name' => 'Notaris Simakuteng', 'password' => bcrypt('notaris123'), 'role' => 'notaris', 'region_id' => $regionBySlug('simakuteng')]
+            ['name' => 'Notaris Semakuteng', 'password' => bcrypt('notaris123'), 'role' => 'notaris', 'region_id' => $regionBySlug('semakuteng')]
         );
 
         User::updateOrCreate(

@@ -37,7 +37,7 @@
                         Pelaporan Notaris Bulanan &amp; Tahunan, kini secara digital.
                     </h1>
                     <p class="mt-4 text-white/75 leading-relaxed">
-                        Notaris di wilayah SIMAKUTENG, RELEPARMU, dan KOTA BENGKULU dapat menyampaikan
+                        Notaris di wilayah SEMAKUTENG, RELEPARMU, dan KOTA BENGKULU dapat menyampaikan
                         laporan berkala lengkap dengan dokumen pendukung tanpa harus datang ke kantor.
                     </p>
                     <ul class="mt-8 space-y-3 text-sm text-white/80">

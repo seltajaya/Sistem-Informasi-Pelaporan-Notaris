@@ -22,7 +22,7 @@
                 <div>
                     <p class="mb-3 font-bold uppercase tracking-wider text-emas-300">Pelayanan</p>
                     <ul class="space-y-2 text-white/70">
-                        <li>SIMAKUTENG · RELEPARMU · KOTA BENGKULU</li>
+                        <li>SEMAKUTENG · RELEPARMU · KOTA BENGKULU</li>
                         <li>Administrasi Hukum Umum</li>
                         <li>Bantuan Hukum</li>
                     </ul>

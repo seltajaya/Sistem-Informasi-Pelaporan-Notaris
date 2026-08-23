@@ -53,7 +53,7 @@ class DashboardComplianceTest extends TestCase
 
     public function test_dashboard_shows_compliance_counts_for_current_month(): void
     {
-        $region = Region::where('slug', 'simakuteng')->first();
+        $region = Region::where('slug', 'semakuteng')->first();
         $submitted = User::where('email', 'notaris1@example.com')->first();
         $missing = User::create([
             'name' => 'Notaris Belum',
@@ -81,7 +81,7 @@ class DashboardComplianceTest extends TestCase
 
     public function test_dashboard_only_counts_same_region_notaris(): void
     {
-        $regionSimak = Region::where('slug', 'simakuteng')->first();
+        $regionSimak = Region::where('slug', 'semakuteng')->first();
         $regionKota = Region::where('slug', 'kota-bengkulu')->first();
 
         $notarisKota = User::where('email', 'notaris2@example.com')->first();
@@ -297,8 +297,8 @@ Expected: PASS (3 tests).
 - [ ] **Step 3: Verifikasi smoke visual**
 
 Pastikan server berjalan, lalu akses `/dashboard` sebagai notaris:
-- Login `notaris1@example.com` / `notaris123` via `/login/simakuteng`
-- Harus terlihat card "Kepatuhan Pelaporan Wilayah SIMAKUTENG" dengan 2 bar (Sudah/Belum) dan daftar nama.
+- Login `notaris1@example.com` / `notaris123` via `/login/semakuteng`
+- Harus terlihat card "Kepatuhan Pelaporan Wilayah semakuteng" dengan 2 bar (Sudah/Belum) dan daftar nama.
 
 Jika server belum jalan:
 ```bash

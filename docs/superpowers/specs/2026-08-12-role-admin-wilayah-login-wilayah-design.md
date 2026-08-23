@@ -17,9 +17,9 @@
 ## 2. Perubahan Database
 
 ### Table `regions`
-- Rename data menjadi: **SIMAKUTENG**, **RELEPARMU**, **KOTA BENGKULU**.
+- Rename data menjadi: **semakuteng**, **RELEPARMU**, **KOTA BENGKULU**.
 - Hapus baris `MPD Lainnya`.
-- Tambah kolom `slug` (string, unique): `simakuteng`, `releparmu`, `kota-bengkulu`.
+- Tambah kolom `slug` (string, unique): `semakuteng`, `releparmu`, `kota-bengkulu`.
 
 ### Table `users` (kolom `role`)
 - Nilai berubah: `admin` → `superadmin`, tambah nilai `admin_wilayah`.
@@ -32,7 +32,7 @@
 
 ## 3. Alur Login
 
-- **Landing (`/`)**: 3 tombol wilayah (`SIMAKUTENG`, `RELEPARMU`, `KOTA BENGKULU`) → `GET /login/{slug}`.
+- **Landing (`/`)**: 3 tombol wilayah (`semakuteng`, `RELEPARMU`, `KOTA BENGKULU`) → `GET /login/{slug}`.
 - **`GET /login/{slug?}`**: halaman login menampilkan badge wilayah. Breeze route `login` diubah untuk menerima slug opsional.
 - **POST login**: setelah `$request->authenticate()`, validasi tambahan:
   - Jika user role `notaris` atau `admin_wilayah` dan `region.slug != {slug}` → gagal login, pesan "Akun tidak terdaftar di wilayah ini."
@@ -79,8 +79,8 @@
 ## 7. Seed
 
 - `admin@example.com/admin123` → `superadmin`.
-- Buat 1 admin wilayah per region: `adm.simakuteng@example.com`, `adm.releparmu@example.com`, `adm.kotabengkulu@example.com` (password `admin123`).
-- Notaris lama di-migrasi ke region baru sesuai mapping (MPD 1→KOTA BENGKULU, MPD 2→RELEPARMU, Simakuteng→SIMAKUTENG).
+- Buat 1 admin wilayah per region: `adm.semakuteng@example.com`, `adm.releparmu@example.com`, `adm.kotabengkulu@example.com` (password `admin123`).
+- Notaris lama di-migrasi ke region baru sesuai mapping (MPD 1→KOTA BENGKULU, MPD 2→RELEPARMU, semakuteng→semakuteng).
 
 ## 8. Testing
 

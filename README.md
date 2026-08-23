@@ -14,7 +14,8 @@ Aplikasi ini dibangun dengan identitas visual **Kantor Wilayah Kementerian Hukum
 
 ### Role Admin Wilayah (per wilayah)
 - Daftarkan & kelola notaris di wilayahnya sendiri
-- Dashboard, laporan, rekapitulasi, tracking kepatuhan — **selalu terbatas pada wilayahnya**
+- Hanya mengakses **Notaris** dan **Kepatuhan** (tracking notaris belum melapor) — **selalu terbatas pada wilayahnya**
+- Dashboard, laporan, rekapitulasi, dan kelola admin wilayah **hanya untuk superadmin**
 
 ### Role Superadmin
 - Akses penuh semua wilayah
@@ -78,7 +79,7 @@ php artisan key:generate
 php artisan migrate --seed     # buat tabel + akun awal + wilayah
 ```
 
-`DATABASE_MAGANGHUB`: aplikasi memakai database bernama `maganghub` — buat dulu jika belum ada:
+Aplikasi memakai database bernama `maganghub` — buat dulu jika belum ada:
 
 ```sql
 CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -89,17 +90,17 @@ CREATE DATABASE maganghub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 | Role | Email | Password |
 |---|---|---|
 | Superadmin | `admin@example.com` | `admin123` |
-| Admin Wilayah — SIMAKUTENG | `adm.simakuteng@example.com` | `admin123` |
+| Admin Wilayah — SEMAKUTENG | `adm.semakuteng@example.com` | `admin123` |
 | Admin Wilayah — RELEPARMU | `adm.releparmu@example.com` | `admin123` |
 | Admin Wilayah — KOTA BENGKULU | `adm.kotabengkulu@example.com` | `admin123` |
-| Notaris (SIMAKUTENG) | `notaris1@example.com` | `notaris123` |
+| Notaris (SEMAKUTENG) | `notaris1@example.com` | `notaris123` |
 | Notaris (KOTA BENGKULU) | `notaris2@example.com` | `notaris123` |
 
 > Ganti password segera setelah masuk ke lingkungan produksi.
 
 ### 4. Login berbasis wilayah
 
-- Landing page menampilkan 3 tombol wilayah: **SIMAKUTENG**, **RELEPARMU**, **KOTA BENGKULU**.
+- Landing page menampilkan 3 tombol wilayah: **SEMAKUTENG**, **RELEPARMU**, **KOTA BENGKULU**.
 - Pencet salah satu → halaman login wilayah tersebut. Akun notaris/admin wilayah dari wilayah lain **ditolak**.
 - **Superadmin** masuk lewat URL langsung: `http://127.0.0.1:8080/admin/login`.
 
