@@ -26,7 +26,7 @@
 
     <div class="leading-tight">
         <p class="{{ $compact ? 'text-[11px]' : 'text-xs' }} font-bold uppercase tracking-[0.16em] {{ $sub }}">
-            Kementerian Hukum dan Hak Asasi Manusia RI
+            Kementerian Hukum Republik Indonesia
         </p>
 
         <p class="{{ $compact ? 'text-sm' : 'text-base' }} font-extrabold uppercase tracking-wide {{ $text }}">

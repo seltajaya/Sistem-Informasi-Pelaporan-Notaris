@@ -631,7 +631,7 @@
 
                                 Sampaikan laporan bulanan dan tahunan secara digital kepada Majelis Pengawas Daerah
 
-                                melalui portal resmi Kantor Wilayah Kementerian Hukum dan HAM Bengkulu.
+                                melalui portal resmi Kantor Wilayah Bengkulu Kementerian Hukum Republik Indonesia.
 
                             </p>
 

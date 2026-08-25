@@ -62,7 +62,7 @@
                     </ul>
                 </div>
 
-                <p class="text-xs text-white/50">&copy; {{ now()->year }} Kanwil Kemenkumham Bengkulu</p>
+                <p class="text-xs text-white/50">&copy; {{ now()->year }} Kanwil Kemenkum Bengkulu</p>
             </div>
 
             <!-- Form panel -->

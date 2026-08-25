@@ -1,6 +1,6 @@
 <x-guest-layout>
     <x-auth-card :title="'Masuk ke Akun' . ($region ? ' — ' . $region->name : '')"
-        subtitle="Sistem Informasi Pelaporan Notaris — Kanwil Kemenkumham Bengkulu">
+        subtitle="Sistem Informasi Pelaporan Notaris — Kanwil Kemenkum Bengkulu">
 
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
