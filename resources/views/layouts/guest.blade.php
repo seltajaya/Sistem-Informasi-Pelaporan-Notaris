@@ -19,7 +19,10 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen lg:grid lg:grid-cols-[1.1fr_1fr]">
             <!-- Institutional panel -->
-            <div class="institutional-header relative overflow-hidden flex flex-col justify-between p-8 sm:p-12 text-white">
+            <div
+                class="institutional-header relative overflow-hidden flex flex-col justify-between p-8 sm:p-12 text-white bg-cover bg-center"
+                style="background-image: linear-gradient(rgba(4, 22, 67, 0.86), rgba(15, 49, 125, 0.94)), url('{{ asset('images/bg-kanwil-bengkulu.png') }}');"
+            >
                 <div class="absolute inset-x-0 top-0 h-1.5 flex" aria-hidden="true">
                     <span class="flex-1 bg-red-600"></span>
                     <span class="flex-1 bg-white"></span>
@@ -73,4 +76,4 @@
             </div>
         </div>
     </body>
-</html>
+</html> 
