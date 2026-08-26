@@ -45,6 +45,7 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->name('admin.')->group(
         Route::get('/laporan/{report}/download', [AdminReportController::class, 'download'])->name('reports.download');
 
         Route::get('/rekapitulasi', [RecapController::class, 'annual'])->name('recap.annual');
+        Route::get('/rekapitulasi/pdf', [RecapController::class, 'pdfExport'])->name('recap.pdf');
         Route::get('/rekapitulasi/{year}', [RecapController::class, 'monthly'])->name('recap.monthly');
 
         Route::get('/admin-wilayah', [RegionAdminController::class, 'index'])->name('region-admins.index');

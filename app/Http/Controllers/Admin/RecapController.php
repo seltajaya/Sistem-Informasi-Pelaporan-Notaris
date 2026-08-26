@@ -40,6 +40,32 @@ class RecapController extends Controller
         ]);
     }
 
+    public function pdfExport(Request $request)
+    {
+        $regionId = $this->regionScope($request);
+
+        $years = Report::query()
+            ->when($regionId, fn ($q) => $q->where('region_id', $regionId))
+            ->selectRaw('report_year, COUNT(*) as total_laporan, SUM(jumlah_akta) as total_akta,
+                SUM(jumlah_disahkan) as total_disahkan, SUM(jumlah_dibukukan) as total_dibukukan,
+                SUM(jumlah_wasiat) as total_wasiat, SUM(jumlah_protes) as total_protes')
+            ->groupBy('report_year')
+            ->orderByDesc('report_year')
+            ->get();
+
+        $regionName = $regionId
+            ? Region::find($regionId)?->name
+            : 'Semua Wilayah';
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.recap-pdf', [
+            'years' => $years,
+            'regionName' => $regionName,
+            'printedAt' => now()->locale('id')->translatedFormat('d F Y H:i'),
+        ]);
+
+        return $pdf->download("rekapitulasi-tahunan-{$regionName}.pdf");
+    }
+
     public function monthly(Request $request, int $year): View
     {
         $regionId = $this->regionScope($request);
